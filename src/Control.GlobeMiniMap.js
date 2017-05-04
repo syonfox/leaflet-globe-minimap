@@ -2,24 +2,14 @@ import 'd3';
 import L from 'leaflet';
 import 'topojson-client';
 
-L.Control.GlobeMiniMap = L.Control.extend({
-  options: {
-    position: 'bottomright',
-    width: 82,
-    height: 82,
-    land: "#bbb",
-    water: "rgba(0, 0, 0, 0.3)",
-    marker: "#CC0000",
-    topojsonSrc: 'data/world.json'
-  },
-
+class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
-  initialize: function (options) {
+  initialize (options) {
     L.Util.setOptions(this, options);
     console.log(this.options);
-  },
+  }
 
-  onAdd: function (map) {
+  onAdd (map) {
     console.log('onAdd()');
 
     this._mainMap = map;
@@ -39,17 +29,17 @@ L.Control.GlobeMiniMap = L.Control.extend({
     this._mainMap.on('moveend', this._onMainMapMoved, this);
 
     return this._container;
-  },
+  }
 
-  addTo: function (map) {
+  addTo (map) {
     console.log('addTo()');
     L.Control.prototype.addTo.call(this, map);
     this.initCanvas();
 
     return this;
-  },
+  }
 
-  initCanvas: function () {
+  initCanvas () {
     //marker icon
     //https://upload.wikimedia.org/wikipedia/commons/9/93/Map_marker_font_awesome.svg
 
@@ -87,9 +77,9 @@ L.Control.GlobeMiniMap = L.Control.extend({
 
     //set to current view
     this.transitionMap(this._mainMap.getCenter());
-  },
+  }
 
-  transitionMap: function (p) {
+  transitionMap (p) {
     console.log('transtionMap');
     var that = this;
     var c = that.c;
@@ -107,14 +97,14 @@ L.Control.GlobeMiniMap = L.Control.extend({
           c.fillStyle = that.options.land, c.beginPath(), path(that.land), c.fill();
         };
       })
-  },
+  }
 
-  onRemove: function (map) {
+  onRemove (map) {
     this._mainMap.off('moveend', this._onMainMapMoved, this);
     this._mainMap.off('move', this._onMainMapMoving, this);
-  },
+  }
 
-  _onMainMapMoved: function (e) {
+  _onMainMapMoved (e) {
     console.log('mainmapmoved');
     if (!this._miniMapMoving) {
       this._mainMapMoving = true;
@@ -124,7 +114,19 @@ L.Control.GlobeMiniMap = L.Control.extend({
       this._miniMapMoving = false;
     }
   }
-});
+}
+MiniMap.prototype.options = {
+  position: 'bottomright',
+  width: 82,
+  height: 82,
+  land: "#bbb",
+  water: "rgba(0, 0, 0, 0.3)",
+  marker: "#CC0000",
+  topojsonSrc: 'data/world.json'
+}
+
+L.Control.GlobeMiniMap = MiniMap
+export default MiniMap
 
 L.control.globeminimap = function (layer, options) {
   return new L.Control.GlobeMiniMap(layer, options);
