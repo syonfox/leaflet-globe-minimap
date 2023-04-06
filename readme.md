@@ -1,5 +1,10 @@
 # Leaflet.GlobeMiniMap
 
+[![GitHub last commit](https://img.shields.io/github/last-commit/syonfox/leaflet-globe-minimap)](https://github.com/syonfox/leaflet-globe-minimap/commits)
+[![example workflow](https://github.com/syonfox/leaflet-globe-minimap/actions/workflows/node.js.yml/badge.svg)](https://github.com/syonfox/leaflet-globe-minimap/actions)
+[![github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/syonfox/leaflet-globe-minimap)
+
+
 Leaflet.GlobeMiniMap is a simple minimap control that places a 3d Globe in the corner of your map, centered on the same location as the main map.
 
 ![cursor_and_3d_minimap_and_minimap_ _bash_ _80x24_and_index_html_ _globe-minimap](https://cloud.githubusercontent.com/assets/1833820/10415088/cb1d45fe-6fb8-11e5-9903-2c2ec16fbabd.png)

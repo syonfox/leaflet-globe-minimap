@@ -41,7 +41,7 @@
 
     map.addLayer(layer);
 
-
+    let meSize = 40
     var miniMap = new L.Control.GlobeMiniMap({
       //uncomment to assign colors
       land:'rgba(56,255,0,0.34)',
@@ -53,7 +53,8 @@
       onAdd: (map, mm)=> {
         mm._container.addEventListener("click", e=>{
           console.log("World CLicked");
-          miniMap.hackMation(30,42)
+          meSize += 5; // just a demo of detecting click .
+          miniMap.hackMation(30,meSize)
         })
       }
     }).addTo(map);
