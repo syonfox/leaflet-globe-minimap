@@ -8,16 +8,16 @@ class MiniMap extends L.Control {
   initialize (options) {
     L.Util.setOptions(this, options);
 
-    console.assert(typeof options.width === 'number', "width must be number px")
-    console.assert(typeof options.height === 'number', "height must be number px")
-    console.assert(typeof options.duration === 'number', "duration must be number ms")
+    console.assert(typeof this.options.width === 'number', "width must be number px")
+    console.assert(typeof this.options.height === 'number', "height must be number px")
+    console.assert(typeof this.options.duration === 'number', "duration must be number ms")
 
-    if(options.height !== options.width) {
+    if(this.options.height !== this.options.width) {
       console.warn("You have asked for a different height then width, this is currently buggy only circles.")
     }
-    if(typeof options.radius === "number") {
-      options.width = options.radius*2;
-      options.height = options.radius*2;
+    if(typeof this.options.radius === "number") {
+      this.options.width = this.options.radius*2;
+      this.options.height = this.options.radius*2;
     }
 
   }
