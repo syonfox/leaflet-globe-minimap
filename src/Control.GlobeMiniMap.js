@@ -6,9 +6,11 @@ import 'topojson-client';
 class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
   initialize (options) {
-    console.assert(typeof options.width === 'number')
-    console.assert(typeof options.height === 'number')
-    console.assert(typeof options.duration === 'number')
+    L.Util.setOptions(this, options);
+
+    console.assert(typeof options.width === 'number', "width must be number px")
+    console.assert(typeof options.height === 'number', "height must be number px")
+    console.assert(typeof options.duration === 'number', "duration must be number ms")
 
     if(options.height !== options.width) {
       console.warn("You have asked for a different height then width, this is currently buggy only circles.")
@@ -17,8 +19,6 @@ class MiniMap extends L.Control {
       options.width = options.radius*2;
       options.height = options.radius*2;
     }
-
-    L.Util.setOptions(this, options);
 
   }
 
