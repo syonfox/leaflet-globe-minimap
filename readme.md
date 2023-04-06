@@ -1,7 +1,11 @@
 # Leaflet.GlobeMiniMap
+<a href="https://www.npmjs.com/package/leaflet-globe-minimap">
+<img src="https://img.shields.io/npm/v/leaflet-globe-minimap.svg" alt="npm version">
+</a>
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/syonfox/leaflet-globe-minimap)](https://github.com/syonfox/leaflet-globe-minimap/commits)
-[![example workflow](https://github.com/syonfox/leaflet-globe-minimap/actions/workflows/node.js.yml/badge.svg)](https://github.com/syonfox/leaflet-globe-minimap/actions)
+
+[//]: # ([![example workflow]&#40;https://github.com/syonfox/leaflet-globe-minimap/actions/workflows/node.js.yml/badge.svg&#41;]&#40;https://github.com/syonfox/leaflet-globe-minimap/actions&#41;)
 [![github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/syonfox/leaflet-globe-minimap)
 
 
