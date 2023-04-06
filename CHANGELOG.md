@@ -3,10 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
-## unreleased
+## 0.0.3
 ### Added
   - updated pages / readme
-
+  - fix bug with resize
+  - add some option validation
+  - `options.radius` is in testing now overrides width and height if used
 
 ## 0.0.2
 ### Added

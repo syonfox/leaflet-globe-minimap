@@ -1,8 +1,8 @@
 {
   "name": "leaflet-globe-minimap",
-  "version": "0.0.2",
-  "author": "Chris Whong",
-  "description": "A plugin for Leaflet that provides a 3d globe minimap in the corner of the map view.",
+  "version": "0.0.3",
+  "author": "Chris Whong, Syonfox",
+  "description": "A L.Control plugin for Leaflet that provides a 3d globe minimap in the corner of the map view.",
   "keywords": [
     "maps",
     "leaflet",
@@ -11,7 +11,8 @@
     "d3",
     "globe",
     "control",
-    "slick"
+    "slick",
+    "leaflet0.7-1.9"
   ],
   "license": "BSD-2-Clause",
   "readmeFilename": "README.md",

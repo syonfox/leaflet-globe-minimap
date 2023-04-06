@@ -1,14 +1,25 @@
 import 'd3';
 import L from 'leaflet';
 import 'topojson-client';
-import {off} from "leaflet/src/dom/DomEvent";
 
 
 class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
   initialize (options) {
+    console.assert(typeof options.width === 'number')
+    console.assert(typeof options.height === 'number')
+    console.assert(typeof options.duration === 'number')
+
+    if(options.height !== options.width) {
+      console.warn("You have asked for a different height then width, this is currently buggy only circles.")
+    }
+    if(typeof options.radius === "number") {
+      options.width = options.radius*2;
+      options.height = options.radius*2;
+    }
+
     L.Util.setOptions(this, options);
-    // console.log(this.options);
+
   }
 
   onAdd (map) {
@@ -118,7 +129,9 @@ class MiniMap extends L.Control {
    * @param d - duration in ms
    */
   transitionMap (p, d) {
-    d = d || this.options.duration
+    if(typeof d != "number") {
+      d = d || this.options.duration
+    }
     // console.log('transtionMap');
     var that = this;
     var c = that.c;
@@ -168,6 +181,7 @@ class MiniMap extends L.Control {
       this._miniMapMoving = false;
     }
   }
+
 }
 MiniMap.prototype.options = {
   position: 'bottomright',
@@ -183,6 +197,7 @@ MiniMap.prototype.options = {
 }
 
 L.Control.GlobeMiniMap = MiniMap
+
 export default MiniMap
 
 L.control.globeminimap = function (layer, options) {

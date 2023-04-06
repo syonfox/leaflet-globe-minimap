@@ -21,9 +21,13 @@ Leaflet.GlobeMiniMap is a simple minimap control that places a 3d Globe in the c
 Leaflet.GlobeMiniMap requires d3.js & topojson.js.  You can load them from a CDN like this:
 
 ```
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css" integrity="sha512-mD70nAW2ThLsWH0zif8JPbfraZ8hbCtjQ+5RU1m4+ztZq6/MymyZeB55pWsi4YAX+73yvcaJyk61mzfYMvtm9w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js" integrity="sha512-Dqm3h1Y4qiHUjbhxTuBGQsza0Tfppn53SHlu/uj1f+RT+xfShfe7r6czRf5r2NmllO2aKx+tYJgoxboOkn1Scg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 ```
+Node doesnt need leaflet 1.9 just works with it.
+
 The library is also looking for `/data/world.json` in order to load the world topojson file. You can use the option `topojsonSrc` to define another source.
 
 Add the globe minimap with one line of code:
@@ -60,7 +64,12 @@ The code for the plugin was modified from [Leaflet.MiniMap](https://github.com/N
 
 The marker SVG on the minimap is from [fontawesome via wikimedia.org](https://upload.wikimedia.org/wikipedia/commons/9/93/Map_marker_font_awesome.svg)
 
-## Issues
+## Issues / todo
+
+- Need a smooth resize animation.
+- need rotation support
+- need a way of mapping the pointer location on the globe to a latlon.
+
 
 Please report issues on [github](https://github.com/chriswhong/leaflet-globe-minimap/issues).
 I am a noob at this plugin business, and am not sure if the /dist and build stuff is working properly, so advice and Pull Requests are welcome!
