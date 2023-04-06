@@ -4,7 +4,8 @@ Leaflet.GlobeMiniMap is a simple minimap control that places a 3d Globe in the c
 
 ![cursor_and_3d_minimap_and_minimap_ _bash_ _80x24_and_index_html_ _globe-minimap](https://cloud.githubusercontent.com/assets/1833820/10415088/cb1d45fe-6fb8-11e5-9903-2c2ec16fbabd.png)
 
-[Try the example out out now on github pages](http://chriswhong.github.io/leaflet-globeminimap/example/)
+[Try the example out out now on github pages](http://syonfox.github.io/leaflet-globe-minimap/example/)
+
 
 ## Using the GlobeMiniMap control
 
@@ -30,12 +31,14 @@ You can pass in an options object to define colors for the water, land and marke
   water:'#3333FF',
   marker:'#000000',
   topojsonSrc: 'path/to/world.json',
-  durations: 1250,
-  width: 82,
-  height: 82,
-
+  durations: 1250,           // use to control how snapy the animation is
+  width: 82,                 // the size, as of now they must be same as height
+  height: 82,                // maybe we should renam radius and have one options
+  onAdd: null,               // calback functions for listners
+  onRemove: null,
 }
 ```
+
 The minimap is reactive, it only changes when the main map's center point changes.  You can't interact with the mini map to move the main map.
 
 ## Attribution

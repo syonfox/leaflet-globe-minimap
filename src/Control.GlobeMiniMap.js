@@ -3,15 +3,16 @@ import L from 'leaflet';
 import 'topojson-client';
 import {off} from "leaflet/src/dom/DomEvent";
 
+
 class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
   initialize (options) {
     L.Util.setOptions(this, options);
-    console.log(this.options);
+    // console.log(this.options);
   }
 
   onAdd (map) {
-    console.log('onAdd()');
+    // console.log('onAdd()');
 
     this._mainMap = map;
 
@@ -33,10 +34,13 @@ class MiniMap extends L.Control {
   }
 
   addTo (map) {
-    console.log('addTo()');
+    // console.log('addTo()');
     L.Control.prototype.addTo.call(this, map);
     this.initCanvas();
 
+    if(typeof this.options.onAdd === "function") {
+      this.options.onAdd(map, this);
+    }
     return this;
   }
 
@@ -115,7 +119,7 @@ class MiniMap extends L.Control {
    */
   transitionMap (p, d) {
     d = d || this.options.duration
-    console.log('transtionMap');
+    // console.log('transtionMap');
     var that = this;
     var c = that.c;
     var path = that.path;
@@ -137,6 +141,10 @@ class MiniMap extends L.Control {
   onRemove (map) {
     this._mainMap.off('moveend', this._onMainMapMoved, this);
     this._mainMap.off('move', this._onMainMapMoving, this);
+
+    if(typeof this.options.onRemove === "function") {
+      this.options.onRemove(map, this);
+    }
   }
 
   //note size must be square for now.
@@ -151,7 +159,7 @@ class MiniMap extends L.Control {
   }
 
   _onMainMapMoved (e) {
-    console.log('mainmapmoved');
+    // console.log('mainmapmoved');
     if (!this._miniMapMoving) {
       this._mainMapMoving = true;
 
@@ -170,6 +178,8 @@ MiniMap.prototype.options = {
   marker: "#CC0000",
   topojsonSrc: 'data/world.json',
   duration: 1250,
+  onAdd: false, //(map, this) for adding event listners.
+  onRemove: false, // callback for cleaning up on remove
 }
 
 L.Control.GlobeMiniMap = MiniMap

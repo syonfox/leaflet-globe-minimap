@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `setSize(w,h)` update options and re add to map to rerender and compute
 - `hackMation()` try it for a demo hacky animation of resize todo figure out how to do this fast with css.
 - `transitionMap(pos, duration)` added duration option.
--
+- `options.onAdd / onRemove` calbacks with map, miniMap, for adding you events to the dom.
+
 ### Changed
 - Also made things correctly scale, note width and height must be = for now due to d3 mathyness. todo fix :)
 - Fixed bug with size change and transparency (issue)[https://github.com/chriswhong/leaflet-globeminimap/issues/12]

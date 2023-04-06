@@ -41,6 +41,7 @@
 
     map.addLayer(layer);
 
+
     var miniMap = new L.Control.GlobeMiniMap({
       //uncomment to assign colors
       land:'rgba(56,255,0,0.34)',
@@ -48,14 +49,17 @@
       width: 42,
       height: 42,
       // marker:'#000000'
-      topojsonSrc : '../src/world.json'
+      topojsonSrc : '../src/world.json',
+      onAdd: (map, mm)=> {
+        mm._container.addEventListener("click", e=>{
+          console.log("World CLicked");
+          miniMap.hackMation(30,42)
+        })
+      }
     }).addTo(map);
 
-    miniMap._container.addEventListener("click", e=>{
-      console.log("World CLicked");
-      miniMap.hackMation(30,42)
 
-    })
+
   </script>
 </body>
 </html>
