@@ -1,6 +1,6 @@
 # Leaflet.GlobeMiniMap
 
-Leaflet.GlobeMiniMap is a simple minimap control that places a 3d Globe in the corner of your map, centered on the same location as the main map.  
+Leaflet.GlobeMiniMap is a simple minimap control that places a 3d Globe in the corner of your map, centered on the same location as the main map.
 
 ![cursor_and_3d_minimap_and_minimap_ _bash_ _80x24_and_index_html_ _globe-minimap](https://cloud.githubusercontent.com/assets/1833820/10415088/cb1d45fe-6fb8-11e5-9903-2c2ec16fbabd.png)
 
@@ -17,7 +17,7 @@ Leaflet.GlobeMiniMap requires d3.js & topojson.js.  You can load them from a CDN
 The library is also looking for `/data/world.json` in order to load the world topojson file. You can use the option `topojsonSrc` to define another source.
 
 Add the globe minimap with one line of code:
-    
+
 ```
     var miniMap = new L.Control.GlobeMiniMap(options).addTo(map);
 ```
@@ -25,11 +25,15 @@ Add the globe minimap with one line of code:
 You can pass in an options object to define colors for the water, land and marker on the globe minimap:
 
 ```
-{     
+{
   land:'#FFFF00',
   water:'#3333FF',
   marker:'#000000',
-  topojsonSrc: 'path/to/world.json'
+  topojsonSrc: 'path/to/world.json',
+  durations: 1250,
+  width: 82,
+  height: 82,
+
 }
 ```
 The minimap is reactive, it only changes when the main map's center point changes.  You can't interact with the mini map to move the main map.
@@ -47,4 +51,4 @@ The marker SVG on the minimap is from [fontawesome via wikimedia.org](https://up
 ## Issues
 
 Please report issues on [github](https://github.com/chriswhong/leaflet-globe-minimap/issues).
-I am a noob at this plugin business, and am not sure if the /dist and build stuff is working properly, so advice and Pull Requests are welcome!  
+I am a noob at this plugin business, and am not sure if the /dist and build stuff is working properly, so advice and Pull Requests are welcome!

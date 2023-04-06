@@ -1,6 +1,6 @@
 {
   "name": "leaflet-globe-minimap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Chris Whong",
   "description": "A plugin for Leaflet that provides a 3d globe minimap in the corner of the map view.",
   "keywords": [
@@ -13,12 +13,12 @@
   "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chriswhong/leaflet-globe-minimap.git"
+    "url": "https://github.com/syonfox/leaflet-globe-minimap.git"
   },
   "main": "dist/Control.GlobeMiniMap.min.js",
-  "homepage": "https://github.com/chriswhong/leaflet-globe-minimap",
+  "homepage": "https://github.com/syonfox/leaflet-globe-minimap",
   "bugs": {
-    "url": "https://github.com/chriswhong/leaflet-globe-minimap.git/issues"
+    "url": "https://github.com/syonfox/leaflet-globe-minimap.git/issues"
   },
   "dependencies": {
     "d3": "^3.5.0",

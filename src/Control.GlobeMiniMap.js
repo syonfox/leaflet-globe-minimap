@@ -1,6 +1,7 @@
 import 'd3';
 import L from 'leaflet';
 import 'topojson-client';
+import {off} from "leaflet/src/dom/DomEvent";
 
 class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
@@ -42,26 +43,42 @@ class MiniMap extends L.Control {
   initCanvas () {
     //marker icon
     //https://upload.wikimedia.org/wikipedia/commons/9/93/Map_marker_font_awesome.svg
-
+    let w = this.options.width;
+    let h = this.options.height
+    let sx = .01*w/82
+    let sy = .01*h/82
+    let mw = 400
+    let ox = (w*0.5)*1/sx;
+    let oy = (h*0.5)*1/sy
+    let offset = `scale(${sx },-${sy}),translate(${ox-(mw)},-${oy})`;
+    console.log("offset: ", offset)
     d3.select('.leaflet-control-minimap')
       .append('svg')
-      .attr("width", 82)
-      .attr("height", 82)
+      .attr("width", this.options.width)
+      .attr("height", this.options.height)
       .attr("style","position: absolute; left: 0; top: 0;")
       .append('path')
       .attr('d','m 768,896 q 0,106 -75,181 -75,75 -181,75 -106,0 -181,-75 -75,-75 -75,-181 0,-106 75,-181 75,-75 181,-75 106,0 181,75 75,75 75,181 z m 256,0 q 0,-109 -33,-179 L 627,-57 q -16,-33 -47.5,-52 -31.5,-19 -67.5,-19 -36,0 -67.5,19 Q 413,-90 398,-57 L 33,717 Q 0,787 0,896 q 0,212 150,362 150,150 362,150 212,0 362,-150 150,-150 150,-362 z')
-      .attr('transform','scale(.01,-.01),translate(3600,-3900)')
+      .attr('transform',offset)
       .attr('style','fill:' + this.options.marker);
 
+
+    let s = (w+h)/4; // no point broken with difrent size
+    //todo allow indapendant scaling so difrent numbers doesnt break it
+    //https://github.com/d3/d3-zoom/issues/48
+
     this.projection = d3.geo.orthographic()
-      .scale(40)
-      .translate([41, 41])
+      .scale(s)
+
+      // .transform()
+      // .scaleLock([w, h])
+      .translate([h/2, w/2])
       .rotate([0,0])
       .clipAngle(90);
 
     var canvas = d3.select('.leaflet-control-minimap').append("canvas")
-      .attr("width", 400)
-      .attr("height", 400)
+      .attr("width", w)
+      .attr("height", h)
 
     this.c = canvas.node().getContext("2d");
 
@@ -76,16 +93,34 @@ class MiniMap extends L.Control {
     });
 
     //set to current view
-    this.transitionMap(this._mainMap.getCenter());
+    this.transitionMap(this._mainMap.getCenter(), 0);
   }
 
-  transitionMap (p) {
+  hackMation(s, e, self) {
+    self = self || this
+    s =  s || 40
+    e = e || 400
+    if (s < e) {
+      s+=3
+      self.setSize(s);
+      setTimeout(self.hackMation,15, s, e, self);
+    }
+
+  }
+
+  /**
+   * Animate the map to a position over d ms
+   * @param p - L.LatLng
+   * @param d - duration in ms
+   */
+  transitionMap (p, d) {
+    d = d || this.options.duration
     console.log('transtionMap');
     var that = this;
     var c = that.c;
     var path = that.path;
     d3.transition()
-      .duration(1250)
+      .duration(d)
       .each("start", function() {
       })
       .tween("rotate", function() {
@@ -102,6 +137,17 @@ class MiniMap extends L.Control {
   onRemove (map) {
     this._mainMap.off('moveend', this._onMainMapMoved, this);
     this._mainMap.off('move', this._onMainMapMoving, this);
+  }
+
+  //note size must be square for now.
+  setSize(w, h) {
+    this.options.width = w;
+    this.options.height = h || w;
+    if(this._map) {
+      //force recompute hack
+      this.remove().addTo(this._mainMap);
+    }
+
   }
 
   _onMainMapMoved (e) {
@@ -122,7 +168,8 @@ MiniMap.prototype.options = {
   land: "#bbb",
   water: "rgba(0, 0, 0, 0.3)",
   marker: "#CC0000",
-  topojsonSrc: 'data/world.json'
+  topojsonSrc: 'data/world.json',
+  duration: 1250,
 }
 
 L.Control.GlobeMiniMap = MiniMap
