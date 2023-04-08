@@ -54,6 +54,32 @@ You can pass in an options object to define colors for the water, land and marke
 
 The minimap is reactive, it only changes when the main map's center point changes.  You can't interact with the mini map to move the main map.
 
+
+# Advanced Styling
+
+I have added the option to use a radial gradiant to style the globeStroke.
+
+This is what the gradient
+
+```
+ globeStroke: [
+    [0, 'red'],
+    [0.5, 'blue'],
+    [1, 'green']
+  ],
+  drawGlobeGradient: true,
+```
+looks like see: the docs form more info https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient#examples
+each array adds a colorStep.
+note the gradient is from `radius-halfStrokeWidth to radius+halfStrokeWidth`
+
+
+
+
+![img.png](img.png)
+
+
+
 ## Attribution
 
 I saw this static 3d minimap and thought it would be a great plugin for leaflet.  [Static 3d Minimap](http://earthview.withgoogle.com/marshall-islands-6155)

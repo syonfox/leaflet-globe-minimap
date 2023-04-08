@@ -1,36 +1,46 @@
-import 'd3';
+import d3 from 'd3';
 import L from 'leaflet';
 import 'topojson-client';
 
 
 class MiniMap extends L.Control {
   //layer is the map layer to be shown in the minimap
-  initialize (options) {
+  initialize(options) {
     L.Util.setOptions(this, options);
 
     console.assert(typeof this.options.width === 'number', "width must be number px")
     console.assert(typeof this.options.height === 'number', "height must be number px")
     console.assert(typeof this.options.duration === 'number', "duration must be number ms")
 
-    if(this.options.height !== this.options.width) {
+    if (this.options.height !== this.options.width) {
       console.warn("You have asked for a different height then width, this is currently buggy only circles.")
     }
-    if(typeof this.options.radius === "number") {
-      this.options.width = this.options.radius*2;
-      this.options.height = this.options.radius*2;
+    if (typeof this.options.radius === "number") {
+      this.options.width = this.options.radius * 2;
+      this.options.height = this.options.radius * 2;
     }
 
   }
 
-  onAdd (map) {
+  onAdd(map) {
     // console.log('onAdd()');
 
     this._mainMap = map;
 
     //Creating the container and stopping events from spilling through to the main map.
     this._container = L.DomUtil.create('div', 'leaflet-control-minimap');
-    this._container.style.width = this.options.width + 'px';
-    this._container.style.height = this.options.height + 'px';
+
+    //if width is specifed we need to pad by this;
+    this._pad = this.options.globeStrokeWidth || 0
+    if (this.options.globeStrokeWidth === true) {
+      this._pad = this.options.width / 5;
+    }
+    //we need more padding if the blur is turned on.
+    if (this.options.globeBlur) this._pad *= 2;
+
+    this._container.style.width = this.options.width + this._pad + 'px';
+    this._container.style.height = this.options.height + this._pad + 'px';
+
 
     L.DomEvent.disableClickPropagation(this._container);
     L.DomEvent.on(this._container, 'mousewheel', L.DomEvent.stopPropagation);
@@ -44,41 +54,46 @@ class MiniMap extends L.Control {
     return this._container;
   }
 
-  addTo (map) {
+  addTo(map) {
     // console.log('addTo()');
     L.Control.prototype.addTo.call(this, map);
     this.initCanvas();
 
-    if(typeof this.options.onAdd === "function") {
+    if (typeof this.options.onAdd === "function") {
       this.options.onAdd(map, this);
     }
     return this;
   }
 
-  initCanvas () {
+  initCanvas() {
     //marker icon
     //https://upload.wikimedia.org/wikipedia/commons/9/93/Map_marker_font_awesome.svg
     let w = this.options.width;
-    let h = this.options.height
-    let sx = .01*w/82
-    let sy = .01*h/82
+    let h = this.options.height;
+    let pw = w + this._pad;
+    let ph = w + this._pad;
+    let p = this._pad;
+    let p2 = p / 2;
+
+    let sx = .01 * pw / 82
+    let sy = .01 * ph / 82
     let mw = 400
-    let ox = (w*0.5)*1/sx;
-    let oy = (h*0.5)*1/sy
-    let offset = `scale(${sx },-${sy}),translate(${ox-(mw)},-${oy})`;
+    let ox = (pw * 0.5) / sx;
+    let oy = (ph * 0.5) / sy
+    let offset = `scale(${sx},-${sy}),translate(${ox - (mw)},-${oy})`;
     console.log("offset: ", offset)
     d3.select('.leaflet-control-minimap')
       .append('svg')
-      .attr("width", this.options.width)
-      .attr("height", this.options.height)
-      .attr("style","position: absolute; left: 0; top: 0;")
+      .attr("width", pw)
+      .attr("height", ph)
+      .attr("style", "position: absolute; left: 0; top: 0;")
       .append('path')
-      .attr('d','m 768,896 q 0,106 -75,181 -75,75 -181,75 -106,0 -181,-75 -75,-75 -75,-181 0,-106 75,-181 75,-75 181,-75 106,0 181,75 75,75 75,181 z m 256,0 q 0,-109 -33,-179 L 627,-57 q -16,-33 -47.5,-52 -31.5,-19 -67.5,-19 -36,0 -67.5,19 Q 413,-90 398,-57 L 33,717 Q 0,787 0,896 q 0,212 150,362 150,150 362,150 212,0 362,-150 150,-150 150,-362 z')
-      .attr('transform',offset)
-      .attr('style','fill:' + this.options.marker);
+      .attr('d', 'm 768,896 q 0,106 -75,181 -75,75 -181,75 -106,0 -181,-75 -75,-75 -75,-181 0,-106 75,-181 75,-75 181,-75 106,0 181,75 75,75 75,181 z m 256,0 q 0,-109 -33,-179 L 627,-57 q -16,-33 -47.5,-52 -31.5,-19 -67.5,-19 -36,0 -67.5,19 Q 413,-90 398,-57 L 33,717 Q 0,787 0,896 q 0,212 150,362 150,150 362,150 212,0 362,-150 150,-150 150,-362 z')
+      .attr('transform', offset)
+      .attr('style', 'fill:' + this.options.marker);
 
 
-    let s = (w+h)/4; // no point broken with difrent size
+    let s = (w + h) / 4; // no point broken with difrent size
     //todo allow indapendant scaling so difrent numbers doesnt break it
     //https://github.com/d3/d3-zoom/issues/48
 
@@ -87,13 +102,13 @@ class MiniMap extends L.Control {
 
       // .transform()
       // .scaleLock([w, h])
-      .translate([h/2, w/2])
-      .rotate([0,0])
+      .translate([(pw) / 2, (ph) / 2])
+      .rotate([0, 0])
       .clipAngle(90);
 
     var canvas = d3.select('.leaflet-control-minimap').append("canvas")
-      .attr("width", w)
-      .attr("height", h)
+      .attr("width", pw)
+      .attr("height", ph)
 
     this.c = canvas.node().getContext("2d");
 
@@ -101,10 +116,9 @@ class MiniMap extends L.Control {
       .projection(this.projection)
       .context(this.c);
 
-    var that = this;
-    d3.json(this.options.topojsonSrc, function (world) {
-      that.globe = {type: "Sphere"},
-      that.land = topojson.feature(world, world.objects.land);
+    d3.json(this.options.topojsonSrc, (world) => {
+      this.globe = {type: "Sphere"};
+      this.land = topojson.feature(world, world.objects.land);
     });
 
     //set to current view
@@ -113,49 +127,166 @@ class MiniMap extends L.Control {
 
   hackMation(s, e, self) {
     self = self || this
-    s =  s || 40
+    s = s || 40
     e = e || 400
     if (s < e) {
-      s+=3
+      s += 3
       self.setSize(s);
-      setTimeout(self.hackMation,15, s, e, self);
+      setTimeout(self.hackMation, 15, s, e, self);
     }
 
   }
 
   /**
    * Animate the map to a position over d ms
-   * @param p - L.LatLng
-   * @param d - duration in ms
+   * @param point - L.LatLng
+   * @param duration - duration in ms
    */
-  transitionMap (p, d) {
-    if(typeof d != "number") {
-      d = d || this.options.duration
+  transitionMap(point, duration) {
+    if (typeof duration != "number") {
+      duration = duration || this.options.duration
     }
     // console.log('transtionMap');
     var that = this;
     var c = that.c;
     var path = that.path;
+
+
+    function drawGlobe() {
+
+    }
+
+    function drawLand() {
+
+    }
+
+
+
     d3.transition()
-      .duration(d)
-      .each("start", function() {
+      .duration(duration)
+      .each("start", function () {
       })
-      .tween("rotate", function() {
-        var r = d3.interpolate(that.projection.rotate(), [-p.lng, -p.lat]);
-        return function(t) {
+      .tween("rotate", function () {
+        let r = d3.interpolate(that.projection.rotate(), [-point.lng, -point.lat]);
+        let pw = that.options.width + that._pad;
+        let ph = that.options.height + that._pad;
+        return function (t) { // draw function
+
           that.projection.rotate(r(t));
-          c.clearRect(0, 0, that.options.width, that.options.height);
-          c.fillStyle = that.options.water, c.beginPath(), path(that.globe), c.fill();
-          c.fillStyle = that.options.land, c.beginPath(), path(that.land), c.fill();
+
+          //clear
+          c.clearRect(0, 0, pw, ph);
+
+          drawGlobe();
+          drawLand();
+          //draw base circle
+          if (that.options.globeFilter) {
+            c.filter = that.options.globeFilter
+          }
+          c.fillStyle = that.options.water;
+          c.beginPath();
+          path(that.globe);
+          c.fill();
+
+          //allow us to specify a outline of the world
+          // suports globeStroke= color, globeFStrokeFilter takes prioraty
+          // but there is a preset globeBlur
+          // you can set globeStrokeWidth
+          if (that.options.globeStroke) {
+            c.save()
+
+            let g = that.options.globeStrokeWidth
+            if (g === true) { // handle dynamic
+              g = that.options.width / 5;
+            } else if (typeof g !== "number") {
+              g = 2; // default if not defined
+            }
+            c.lineWidth = g;
+
+            if (that.options.globeStrokeFilter) {
+              c.filter = that.options.globeStrokeFilter;
+            } else if (that.options.globeBlur) {
+              var h = that.options.globeBlur;
+              if (h === true) h = g / 4;
+              c.filter = 'blur(' + h + 'px)'
+            }
+
+
+            let style = that.options.globeStroke;
+            if (Array.isArray(style)) {
+              //we will construct a radial gradient based on this
+              let center = pw / 2
+              let w2 = that.options.width/2;
+              let halfStrokeWidth = g / 2;
+              let gradient = c.createRadialGradient(center, center, w2 - halfStrokeWidth, center, center, w2+halfStrokeWidth)
+              style.forEach(s => {
+                console.log("adding step: ", ...s);
+                gradient.addColorStop(...s);
+              })
+
+
+              style = gradient;
+
+              if(that.options.drawGlobeGradient) {
+                console.log("debug draw")
+                c.save()
+                c.fillStyle = style;
+                c.fillRect(0, 0, pw, ph);
+                c.restore()
+              }
+            }
+
+
+
+            c.strokeStyle = style
+
+            c.beginPath();
+            path(that.globe);
+            c.stroke();
+            c.restore();
+          }
+
+          //ok now onto drawing the land on top of the circle
+
+          if (that.options.landFilter) {
+            c.filter = that.options.landFilter
+          } else if (that.options.landShadow) {
+            let s = that.options.landShadow;
+            let p = pw / 100;
+            let l = pw / 100;
+            c.filter = 'drop-shadow(' + l + 'px ' + l + 'px ' + p + 'px ' + s + ')'
+
+          } else {
+            c.filter = "";
+          }
+          c.fillStyle = that.options.land,
+            c.beginPath(),
+            path(that.land),
+            c.fill();
+
+          if (that.options.landStroke) {
+            c.save();
+            if (that.options.landStrokeFilter) {
+              c.filter = that.options.landStrokeFilter
+            } else {
+              c.filter = "";
+            }
+            c.strokeStyle = that.options.landStroke
+            c.lineWidth = that.options.landStrokeWidth || 2
+            c.beginPath();
+            path(that.land);
+            c.stroke()
+            c.restore();
+          }
         };
       })
   }
 
-  onRemove (map) {
+  onRemove(map) {
     this._mainMap.off('moveend', this._onMainMapMoved, this);
     this._mainMap.off('move', this._onMainMapMoving, this);
 
-    if(typeof this.options.onRemove === "function") {
+    if (typeof this.options.onRemove === "function") {
       this.options.onRemove(map, this);
     }
   }
@@ -164,14 +295,14 @@ class MiniMap extends L.Control {
   setSize(w, h) {
     this.options.width = w;
     this.options.height = h || w;
-    if(this._map) {
+    if (this._map) {
       //force recompute hack
       this.remove().addTo(this._mainMap);
     }
 
   }
 
-  _onMainMapMoved (e) {
+  _onMainMapMoved(e) {
     // console.log('mainmapmoved');
     if (!this._miniMapMoving) {
       this._mainMapMoving = true;
@@ -183,6 +314,7 @@ class MiniMap extends L.Control {
   }
 
 }
+
 MiniMap.prototype.options = {
   position: 'bottomright',
   width: 82,
@@ -194,6 +326,18 @@ MiniMap.prototype.options = {
   duration: 1250,
   onAdd: false, //(map, this) for adding event listners.
   onRemove: false, // callback for cleaning up on remove
+  globeStroke: false,
+  globeStrokeWidth: 4,
+  globeBlur: false,
+  globeStrokeFilter: false,
+  globeFilter: false,
+  landStroke: false,
+  landStrokeWidth: 1,
+  landShadow: false,
+  landFilter: false,
+  landStrokeFilter: false,
+
+
 }
 
 L.Control.GlobeMiniMap = MiniMap
