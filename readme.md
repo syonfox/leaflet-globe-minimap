@@ -78,7 +78,65 @@ note the gradient is from `radius-halfStrokeWidth to radius+halfStrokeWidth`
 
 ![img.png](img.png)
 
+```js
+/* let g = [
+    [0, 'red'],
+    [0.5, 'blue'],
+    [1, 'green']
+  ]*/
+  let g = [
+    [0, '#00000000'],
+    [0.4, 'rgba(238,0,255,0.27)'],
+    [0.49, 'rgba(121,6,129,0.59)'],
+    [0.5, 'rgba(0,0,0,0.48)'],
+    [0.55, 'rgba(0,0,0,0.51)'],
+    [0.56, 'rgba(75,234,229,0.56)'],
+    [0.8, 'rgba(98,248,220,0.34)'],
+    [0.95, 'rgba(98,248,220,0.12)'],
+    [1, '#00000000'],
+  ]
 
+  let toonOptions = {
+    height: 242,
+    width: 242,
+    // topojsonSrc: "../src/world.json",
+
+    // globeBlur: true,
+    water: "rgba(0,150,231,0.34)",
+    globeStroke: g,
+    // drawGlobeGradient: true,
+    globeStrokeWidth: 25,
+
+    land: "rgba(62,255,8,0.61)",
+    landStroke: "#031703",
+    // shadow: "rgba(129,35,129,0.63)",
+    landStrokeWidth: 1,
+  }
+  var miniMap;
+
+  function makeMiniMap(theme) {
+
+    let o = Object.assign({
+      height: 40,
+      width: 40,
+      topojsonSrc: "../src/world.json",
+      onAdd: (map, mm) => {
+        mm._container.addEventListener("click", e => {
+          console.log("World CLicked");
+          meSize += 5; // just a demo of detecting click .
+          miniMap.hackMation(30, meSize)
+        })
+      }
+    }, theme)
+
+    miniMap = new L.Control.GlobeMiniMap(o).addTo(map);
+
+
+  }
+  let meSize = 40
+  makeMiniMap(toonOptions);
+
+```
 
 ## Attribution
 

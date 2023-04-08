@@ -237,7 +237,6 @@ class MiniMap extends L.Control {
             }
 
 
-
             c.strokeStyle = style
 
             c.beginPath();
@@ -326,15 +325,16 @@ MiniMap.prototype.options = {
   duration: 1250,
   onAdd: false, //(map, this) for adding event listners.
   onRemove: false, // callback for cleaning up on remove
-  globeStroke: false,
-  globeStrokeWidth: 4,
-  globeBlur: false,
-  globeStrokeFilter: false,
+  globeStroke: false, // the color to set for the strokeStyle.
+  // implementation note. this._pad is the padding added to the div.
+  globeStrokeWidth: 4, // true for 1/5 width,
+  globeBlur: false, // preset to pixel for gausian blur on the stroke
+  globeStrokeFilter: false, // override stroke filter string.
   globeFilter: false,
   landStroke: false,
   landStrokeWidth: 1,
-  landShadow: false,
-  landFilter: false,
+  landShadow: false, // override filter with a shadow of color
+  landFilter: false, // idk try it. https://developer.mozilla.org/en-US/docs/Web/CSS/filter
   landStrokeFilter: false,
 
 
