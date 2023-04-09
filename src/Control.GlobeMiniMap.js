@@ -153,13 +153,13 @@ class MiniMap extends L.Control {
 
 
     function drawGlobe() {
-
+      //custom predraw background
     }
 
     function drawLand() {
+      //cool
 
     }
-
 
 
     d3.transition()
@@ -216,9 +216,14 @@ class MiniMap extends L.Control {
             if (Array.isArray(style)) {
               //we will construct a radial gradient based on this
               let center = pw / 2
-              let w2 = that.options.width/2;
+              let w2 = that.options.width / 2;
               let halfStrokeWidth = g / 2;
-              let gradient = c.createRadialGradient(center, center, w2 - halfStrokeWidth, center, center, w2+halfStrokeWidth)
+              let r0 = w2 - halfStrokeWidth;
+              if (r0 < 0) {
+                r0 = 0;
+                console.warn("createRadialGradient Negative radius not allowed. setting to 0!");
+              }
+              let gradient = c.createRadialGradient(center, center, r0, center, center, w2 + halfStrokeWidth)
               style.forEach(s => {
                 console.log("adding step: ", ...s);
                 gradient.addColorStop(...s);
@@ -227,7 +232,7 @@ class MiniMap extends L.Control {
 
               style = gradient;
 
-              if(that.options.drawGlobeGradient) {
+              if (that.options.drawGlobeGradient) {
                 console.log("debug draw")
                 c.save()
                 c.fillStyle = style;
